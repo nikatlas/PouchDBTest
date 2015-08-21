@@ -90,8 +90,11 @@
             });
         },
         sync: function(callback){
+            var self = this;
             this.dal.sync({
-                live: true
+                live: true,retry:true,
+                filter: 'app/by_user',
+                query_params: { "hash" : self._hash }
             }, callback);
         },
 

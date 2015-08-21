@@ -109,8 +109,18 @@
         // Rememeber to add a sync function and add the filter doc that RUNS ON SERVER!
         sync: function (options, callback) {
             if(!options)options = {};
+            var self = this;
             this.connection.sync(this._remoteUrl, options)
-                .on("complete", callback);
+                .on("paused", function(){
+                    if(callback)callback();
+                })
+                .on("change", function(){
+                    if(callback)callback();
+                })
+                .on("error", function(err){
+                    if( err.status == 500 )self.sync(options,callback);
+                    console.log(err);
+                });
         },
 
         openConnectionError: function(){
